@@ -20,8 +20,10 @@ import com.google.inject.name.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tv.icntv.sender.compress.Compress;
+import tv.icntv.sender.compress.DefaultCompress;
 import tv.icntv.sender.conf.Configuration;
 import tv.icntv.sender.decompress.DeCompress;
+import tv.icntv.sender.decompress.DefaultDeCompress;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +40,10 @@ public  class DefaultReCompress implements ReCompress {
     private int BUFFER = 128 * 1024* 1024;
     private String sourceFile;
     private String targetFile;
+    private String file;
+
+
+
     @Inject
     private DeCompress unCompress;
     @Inject
@@ -78,16 +84,13 @@ public  class DefaultReCompress implements ReCompress {
     public DefaultReCompress(@Named("source")String sourceFile, @Named("reCompressSource")String targetFile) {
         this.sourceFile = sourceFile;
         this.targetFile = targetFile;
-
+        this.setFile(sourceFile);
     }
 
 
     @Override
     public boolean reCompress() throws IOException {
-        if(null == compress || null == unCompress){
-            logger.info("no need compress and decompress,return true");
-            return true;
-        }
+
         InputStream inputStream=unCompress.getInputStream(getSourceFile());
         OutputStream outputStream = compress.getOutputStream(getTargetFile());
         try {
@@ -103,12 +106,26 @@ public  class DefaultReCompress implements ReCompress {
             unCompress.close(inputStream);
             compress.close(outputStream);
         }
+        this.setFile(this.getTargetFile());
         return true;
 
     }
 
     @Override
     public boolean isReCompress() {
-        return null !=compress && unCompress != null;
+        return !(compress instanceof DefaultCompress) && !(unCompress instanceof DefaultDeCompress);
+    }
+
+    @Override
+    public String getSendFile() {
+        return getFile();  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
     }
 }

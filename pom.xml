@@ -112,4 +112,16 @@
             </plugin>
         </plugins>
     </build>
+    <distributionManagement>
+          <repository>
+              <id>icntv-release</id>
+              <name> Nexus Release Repository</name>
+              <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+          </repository>
+          <snapshotRepository>
+              <id>icntv-snapshots</id>
+              <name>Nexus Snapshot Repository</name>
+              <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+          </snapshotRepository>
+      </distributionManagement>
 </project>

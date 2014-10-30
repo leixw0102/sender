@@ -48,19 +48,21 @@ public abstract class AbstractSender implements ISender{
 
     @Override
     public boolean send() {
+
         if(reCompress.isReCompress()){
             try {
                 reCompress.reCompress();
+
             } catch (IOException e) {
                 throw new RuntimeException("recompress error "+e); //To change body of catch statement use File | Settings | File Templates.
             }
         }
         try {
-            sendMsg();
+            sendMsg(reCompress.getSendFile());
             return true;
         }catch (Exception e){
             throw new RuntimeException(e);
         }
     }
-    public abstract void sendMsg()throws Exception;
+    public abstract void sendMsg(String file)throws Exception;
 }

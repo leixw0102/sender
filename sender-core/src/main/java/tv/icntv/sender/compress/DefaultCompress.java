@@ -1,4 +1,4 @@
-/*
+package tv.icntv.sender.compress;/*
  * Copyright 2014 Future TV, Inc.
  *
  * The contents of this file are subject to the terms
@@ -16,21 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package tv.icntv.sender;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Created by leixw
  * <p/>
  * Author: leixw
- * Date: 2014/10/17
- * Time: 09:32
+ * Date: 2014/10/30
+ * Time: 10:50
  */
-public interface ReCompress {
-    public boolean reCompress() throws IOException;
+public class DefaultCompress extends AbstractCompress {
+    @Override
+    public OutputStream getOutputStream(String target) throws IOException {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
-    public boolean isReCompress() ;
-
-    public String getSendFile();
+    @Override
+    public void close(OutputStream in) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

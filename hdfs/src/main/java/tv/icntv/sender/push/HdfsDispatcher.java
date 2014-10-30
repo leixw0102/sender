@@ -41,26 +41,25 @@ public class HdfsDispatcher extends AbstractSender {
     private static final String WRITING = ".writing", WRITED = ".writed";
 
 
-    private String source;
+//    private String source;
     private String url;
 
 
 
-    public HdfsDispatcher(@Named("reCompressSource")String source, @Named("hdfsUrl")String url) {
-        this.source = source;
+    public HdfsDispatcher( @Named("hdfsUrl")String url) {
 
 	    this.url = url;
 //
-        logger.info("source {} \r\n url {}" , source,getUrl());
+//        logger.info("source {} \r\n url {}" , source,getUrl());
     }
 
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
+//    public String getSource() {
+//        return source;
+//    }
+//
+//    public void setSource(String source) {
+//        this.source = source;
+//    }
 
     public String getUrl() {
         return url;
@@ -71,17 +70,18 @@ public class HdfsDispatcher extends AbstractSender {
     }
 
     @Override
-    public void sendMsg() throws Exception {
+    public void sendMsg(String file) throws Exception {
         long start = System.nanoTime();
         try {
-            Path source = new Path(getSource());
-            Path target = new Path(getUrl());
-            logger.info("from ={} to ={}");
+            String hdfsUrl=getUrl()+ File.separator + new File(file).getName();
+            Path source = new Path(file);
+            Path target = new Path(hdfsUrl);
+            logger.info("from ={} to ={}",file,hdfsUrl);
             fileSystem = (DistributedFileSystem) FileSystem.get(configuration);
-            Path writedPath = new Path(getUrl() + WRITED);
+            Path writedPath = new Path(hdfsUrl + WRITED);
             if (fileSystem.exists(writedPath) && fileSystem.exists(target)) {
-                if (new File(getSource()).length() == fileSystem.getFileStatus(target).getLen()) {
-                    logger.info("source file " + getSource() + " exist hdfs path=" + getUrl());
+                if (new File(file).length() == fileSystem.getFileStatus(target).getLen()) {
+                    logger.info("source file " + file + " exist hdfs path=" + hdfsUrl);
                     return ;
                 } else {
                     logger.info("delete file because file size no consistency");
@@ -89,7 +89,7 @@ public class HdfsDispatcher extends AbstractSender {
                     fileSystem.delete(writedPath, true);
                 }
             }
-            Path writingPath = new Path(getUrl() + WRITING);
+            Path writingPath = new Path(hdfsUrl + WRITING);
             //create...
             if (!fileSystem.exists(writingPath)) {
                 logger.info("create file .writing");
@@ -102,7 +102,7 @@ public class HdfsDispatcher extends AbstractSender {
             //rename..
             logger.info("file to hdfs over..rename status from .writing to .writed ");
             fileSystem.rename(writingPath, writedPath);
-            logger.info("complete file " + source + " to hdfs " + getUrl() + " . use time :" + (System.nanoTime() - start) / Math.pow(10, 9));
+            logger.info("complete file " + source + " to hdfs " + hdfsUrl + " . use time :" + (System.nanoTime() - start) / Math.pow(10, 9));
         } catch (Exception e) {
 
             throw e ;
