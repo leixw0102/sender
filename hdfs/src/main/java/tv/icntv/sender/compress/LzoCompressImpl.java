@@ -53,7 +53,7 @@ public class LzoCompressImpl extends AbstractCompress {
     protected  org.apache.hadoop.conf.Configuration getHdfsConfiguration() {
         org.apache.hadoop.conf.Configuration configuration = new org.apache.hadoop.conf.Configuration();
         configuration.set("mapred.job.tracker", "local");
-        configuration.set("io.compression.codecs", "com.hadoop.compression.lzo.LzopCodec");
+        configuration.set("io.compression.codecs", "com.hadoop.compression.lzo.LzoCodec");
         return configuration;
     }
 

@@ -82,7 +82,7 @@ public class HdfsModule extends SenderModule implements HdfsProperties {
 
         binder.bind(String.class).annotatedWith(Names.named("reCompressSource")).toInstance(lzoFile);
         binder.bind(String.class).annotatedWith(Names.named("hdfsUrl")).toInstance(args[2]);
-        if (args.length == 4) {
+        if (args.length == 5) {
             binder.bind(Compress.class).to(Type.valueOf(args[3]).getClassName()).in(Scopes.SINGLETON);
             binder.bind(DeCompress.class).to(Type.valueOf(args[4]).getClassName()).in(Scopes.SINGLETON);
         }else {
