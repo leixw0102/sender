@@ -18,10 +18,7 @@
  */
 
 import com.google.inject.*;
-import tv.icntv.sender.Reflection;
-import tv.icntv.sender.compress.Compress;
-import tv.icntv.sender.conf.Configuration;
-import tv.icntv.sender.decompress.DeCompress;
+import tv.icntv.sender.HdfsModule;
 
 /**
  * Created by leixw
@@ -31,7 +28,10 @@ import tv.icntv.sender.decompress.DeCompress;
  * Time: 10:24
  */
 public class Main {
-
+    /**
+     * args example: 0--source file;1-- compress path 2-- hdfs url 3--compress type 4 decompress
+     * @param args
+     */
     public static void main(String []args){
         HdfsModule module = new HdfsModule(args);
         Injector injector = Guice.createInjector(module);//(new String[]{"d:\\douban\\error.txt","d:\\",""}));

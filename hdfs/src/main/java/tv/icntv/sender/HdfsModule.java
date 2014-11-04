@@ -1,4 +1,4 @@
-/*
+package tv.icntv.sender;/*
  * Copyright 2014 Future TV, Inc.
  *
  * The contents of this file are subject to the terms
