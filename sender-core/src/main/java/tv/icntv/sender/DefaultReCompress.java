@@ -15,6 +15,7 @@ package tv.icntv.sender;/*
  */
 
 
+import com.google.common.io.ByteSource;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.slf4j.Logger;
@@ -25,9 +26,8 @@ import tv.icntv.sender.conf.Configuration;
 import tv.icntv.sender.decompress.DeCompress;
 import tv.icntv.sender.decompress.DefaultDeCompress;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.CharBuffer;
 
 /**
  * Created by leixw
@@ -41,7 +41,7 @@ public  class DefaultReCompress implements ReCompress {
     private String sourceFile;
     private String targetFile;
     private String file;
-
+    private CharBuffer charBuffer = CharBuffer.allocate(BUFFER);
 
 
     @Inject
@@ -49,8 +49,7 @@ public  class DefaultReCompress implements ReCompress {
     @Inject
     private Compress compress;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static String COMPRESS_NAME="sender.compress";
-    private static String UNCOMPRESS_NAME="sender.decompress";
+
     @Inject
     private Configuration configuration;
 
@@ -80,10 +79,11 @@ public  class DefaultReCompress implements ReCompress {
 
     public DefaultReCompress() {
     }
-
-    public DefaultReCompress(@Named("source")String sourceFile, @Named("reCompressSource")String targetFile) {
+    private String encode;
+    public DefaultReCompress(@Named("source")String sourceFile, @Named("reCompressSource")String targetFile,@Named("encoding") String encode) {
         this.sourceFile = sourceFile;
         this.targetFile = targetFile;
+        this.encode = encode;
         this.setFile(sourceFile);
     }
 
@@ -91,20 +91,23 @@ public  class DefaultReCompress implements ReCompress {
     @Override
     public boolean reCompress() throws IOException {
 
-        InputStream inputStream=unCompress.getInputStream(getSourceFile());
-        OutputStream outputStream = compress.getOutputStream(getTargetFile());
+        BufferedReader reader=unCompress.getBufferedReader(getSourceFile(),this.encode);
+        BufferedWriter writer = compress.getWriter(getTargetFile(),"utf-8");
         try {
-            int count;
-            byte data[] = new byte[BUFFER];
-            while ((count = inputStream.read(data, 0, BUFFER)) != -1) {
-                outputStream.write(data, 0, count);
+            while(reader.read(charBuffer) !=-1){
+                charBuffer.flip();
+                writer.write(charBuffer.toString());
+                charBuffer.clear();
             }
+            writer.flush();
+
         } catch (Exception e) {
             logger.error("compress error !",e);
+//            this.setFile(this.getTargetFile());
             return false;
         } finally {
-            unCompress.close(inputStream);
-            compress.close(outputStream);
+            unCompress.close(reader);
+            compress.close(writer);
         }
         this.setFile(this.getTargetFile());
         return true;
@@ -113,7 +116,8 @@ public  class DefaultReCompress implements ReCompress {
 
     @Override
     public boolean isReCompress() {
-        return !(compress instanceof DefaultCompress) && !(unCompress instanceof DefaultDeCompress);
+
+        return !(compress instanceof DefaultCompress) ;
     }
 
     @Override

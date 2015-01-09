@@ -47,8 +47,5 @@ public class GzDecompressImpl extends AbstractDeCompress {
         return new GZIPInputStream(new FileInputStream(file));
     }
 
-    @Override
-    public void close(InputStream in) {
-        Closeables.closeQuietly(in);
-    }
+
 }

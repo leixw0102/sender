@@ -18,6 +18,8 @@ package tv.icntv.sender;/*
  */
 
 import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -29,6 +31,7 @@ import java.io.IOException;
  * Time: 09:43
  */
 public abstract class AbstractSender implements ISender{
+    private Logger logger= LoggerFactory.getLogger(this.getClass());
     @Inject
     private ReCompress reCompress;
     public AbstractSender(){
@@ -48,8 +51,9 @@ public abstract class AbstractSender implements ISender{
 
     @Override
     public boolean send() {
-
+        logger.info("is reCompress:{},send target file:{}",reCompress.isReCompress()+"" ,reCompress.getSendFile());
         if(reCompress.isReCompress()){
+
             try {
                 reCompress.reCompress();
 

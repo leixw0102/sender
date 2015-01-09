@@ -17,7 +17,13 @@ package tv.icntv.sender.compress;/*
  * under the License.
  */
 
+import com.google.common.io.Closeables;
 import com.google.inject.Inject;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 /**
  * Created by leixw
@@ -27,6 +33,28 @@ import com.google.inject.Inject;
  * Time: 10:42
  */
 public abstract class AbstractCompress implements Compress{
+    @Override
+    public BufferedWriter getWriter(String target, String encode) throws IOException {
+        return new BufferedWriter(new OutputStreamWriter(getOutputStream(target),encode));  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void close(BufferedWriter writer) {
+        try {
+            Closeables.close(writer, true);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    @Override
+    public void close(OutputStream out) {
+        try {
+            Closeables.close(out, true);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 
     /**
      *

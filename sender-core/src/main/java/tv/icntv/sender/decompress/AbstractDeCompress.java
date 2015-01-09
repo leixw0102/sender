@@ -17,8 +17,14 @@ package tv.icntv.sender.decompress;/*
  * under the License.
  */
 
+import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 import tv.icntv.sender.conf.Configuration;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Created by leixw
@@ -33,6 +39,22 @@ public abstract class AbstractDeCompress implements DeCompress {
      */
 
     //public abstract void init();
+
+    @Override
+    public BufferedReader getBufferedReader(String source, String encoding) throws IOException {
+
+        return new BufferedReader(new InputStreamReader(getInputStream(source),encoding));  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void close(InputStream in) {
+        Closeables.closeQuietly(in);
+    }
+
+    @Override
+    public void close(BufferedReader in) {
+        Closeables.closeQuietly(in);
+    }
 
     protected AbstractDeCompress() {
 //        init();

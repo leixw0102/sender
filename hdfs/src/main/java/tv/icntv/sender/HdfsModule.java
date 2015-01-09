@@ -72,6 +72,23 @@ public class HdfsModule extends SenderModule implements HdfsProperties {
             throw new RuntimeException("source =" + args[0] + " not exist or not file");
         }
         binder.bind(String.class).annotatedWith(Names.named("source")).toInstance(sourceFile.getPath());
+
+        if (args.length == 6) {
+            binder.bind(Compress.class).to(Type.valueOf(args[3]).getClassName()).in(Scopes.SINGLETON);
+            binder.bind(DeCompress.class).to(Type.valueOf(args[4]).getClassName()).in(Scopes.SINGLETON);
+            logger.info("recompress : {}, deCompress:{}",args[3],args[4]);
+            binder.bind(String.class).annotatedWith(Names.named("encoding")).toInstance(args[5]);
+        }else if(args.length ==5){
+            binder.bind(Compress.class).to(Type.valueOf(args[3]).getClassName()).in(Scopes.SINGLETON);
+            binder.bind(DeCompress.class).to(Type.valueOf(args[4]).getClassName()).in(Scopes.SINGLETON);
+            logger.info("recompress : {}, deCompress:{}",args[3],args[4]);
+            binder.bind(String.class).annotatedWith(Names.named("encoding")).toInstance("utf-8");
+        }else{
+            binder.bind(Compress.class).to(DefaultCompress.class).in(Scopes.SINGLETON);
+            binder.bind(DeCompress.class).to(DefaultDeCompress.class).in(Scopes.SINGLETON);
+
+        }
+
         File lzo = new File(args[1]);
         if (!lzo.exists()) {
             lzo.mkdirs();
@@ -82,16 +99,11 @@ public class HdfsModule extends SenderModule implements HdfsProperties {
 
         binder.bind(String.class).annotatedWith(Names.named("reCompressSource")).toInstance(lzoFile);
         binder.bind(String.class).annotatedWith(Names.named("hdfsUrl")).toInstance(args[2]);
-        if (args.length == 5) {
-            binder.bind(Compress.class).to(Type.valueOf(args[3]).getClassName()).in(Scopes.SINGLETON);
-            binder.bind(DeCompress.class).to(Type.valueOf(args[4]).getClassName()).in(Scopes.SINGLETON);
-        }else {
-            binder.bind(Compress.class).to(DefaultCompress.class).in(Scopes.SINGLETON);
-            binder.bind(DeCompress.class).to(DefaultDeCompress.class).in(Scopes.SINGLETON);
-        }
+
+        logger.info("bind source :{},lzo path:{},hdfsUrl:{}",sourceFile.getPath(),lzoFile,args[2]);
         try {
 
-            binder.bind(ReCompress.class).toConstructor(DefaultReCompress.class.getConstructor(String.class, String.class)).in(Scopes.SINGLETON);
+            binder.bind(ReCompress.class).toConstructor(DefaultReCompress.class.getConstructor(String.class, String.class,String.class)).in(Scopes.SINGLETON);
             binder.bind(ISender.class).toConstructor(HdfsDispatcher.class.getConstructor(String.class)).in(Scopes.SINGLETON);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

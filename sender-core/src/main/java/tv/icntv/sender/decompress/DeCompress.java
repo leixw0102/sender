@@ -14,6 +14,8 @@ package tv.icntv.sender.decompress;/*
  *      limitations under the License.
  */
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -28,6 +30,7 @@ public interface DeCompress {
 
 
     public InputStream getInputStream(String source) throws IOException;
-
+    public BufferedReader getBufferedReader(String source,String encoding) throws IOException;
     public void close(InputStream in);
+    public void close(BufferedReader in);
 }

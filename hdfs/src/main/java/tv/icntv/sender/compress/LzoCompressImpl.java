@@ -66,13 +66,6 @@ public class LzoCompressImpl extends AbstractCompress {
         return lzoCodec.createOutputStream(new FileOutputStream(file));
     }
 
-    @Override
-    public void close(OutputStream out) {
-        try {
-            Closeables.close(out,true);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
+
 
 }

@@ -1,1 +1,7 @@
 java -jar abc.jar $down"/"$uri $lzo $hdfsUri$downDirectory"/"$day1 LZO_COMPRESS GZ_DECOMPRESS
+
+
+UN_COMPRESS_NONE
+GZ_DECOMPRESS
+LZO_COMPRESS
+NONE_COMPRESS

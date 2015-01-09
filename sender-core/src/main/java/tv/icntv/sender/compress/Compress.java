@@ -14,6 +14,7 @@ package tv.icntv.sender.compress;/*
  *      limitations under the License.
  */
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,5 +29,7 @@ import java.io.OutputStream;
 public interface Compress {
 
     public OutputStream getOutputStream(String target) throws IOException;
+    public BufferedWriter getWriter(String target,String encode) throws IOException;
     public void close(OutputStream in);
+    public void close(BufferedWriter writer);
 }

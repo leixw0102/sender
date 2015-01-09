@@ -18,10 +18,7 @@ import com.google.common.io.Closeables;
 import com.google.inject.Inject;
 import tv.icntv.sender.conf.Configuration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Created by leixw
@@ -42,10 +39,7 @@ public class DefaultDeCompress extends AbstractDeCompress {
         return new FileInputStream(file);
     }
 
-    @Override
-    public void close(InputStream in) {
-        Closeables.closeQuietly(in);
-    }
+
 
 //    @Override
 //    public void init() {
